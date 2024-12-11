@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LINE 連投ツール</title>
+    <script src="https://static.line-scdn.net/liff/2.1/sdk.js"></script>
+</head>
+<body>
+    <h1>LINE 連投ツール</h1>
+    <p>ボタンを押すと、メッセージが1秒ごとに送信されます。</p>
+    
+    <!-- ボタンを押してメッセージを送信 -->
+    <button id="sendBtn">連投メッセージ送信</button>
+
+    <script>
+        // LIFFアプリ初期化
+        liff.init({ liffId: "YOUR_LIFF_ID" }).then(() => {
+            // LIFFアプリが初期化されたらボタンにイベントを追加
+            document.getElementById("sendBtn").addEventListener("click", sendMessage);
+        }).catch((err) => {
+            console.error("LIFF initialization failed", err);
+        });
+
+        // メッセージ送信を1秒ごとに繰り返す関数
+        function sendMessage() {
+            const message = "このメッセージは連投されます。";
+
+            let count = 0;
+            const interval = setInterval(() => {
+                // メッセージ送信
+                liff.sendMessages([{
+                    type: "text",
+                    text: message
+                }]).then(() => {
+                    console.log("メッセージ送信成功！");
+                }).catch((error) => {
+                    console.error("メッセージ送信失敗:", error);
+                });
+
+                count++;
+                if (count >= 5) {
+                    clearInterval(interval); // 5回送信後に停止
+                    console.log("5回のメッセージ送信が完了しました。");
+                }
+            }, 1000); // 1秒ごとにメッセージを送信
+        }
+    </script>
+</body>
+</html>
